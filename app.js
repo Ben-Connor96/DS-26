@@ -9,6 +9,8 @@ const containerDiv = document.getElementById("vizContainer");
 //4. document references the html document
 //5. make sure you reference the viz container you previously made in your html code
 
+switchstatus = false;
+
 const options = {
   device: "desktop",
   height: "900px",
@@ -16,12 +18,13 @@ const options = {
 };
 const url =
   "https://public.tableau.com/views/EmbeddingExample_16734335631100/EmbeddingExample?:language=en-US&publish=yes&:display_count=n&:origin=viz_share_link";
+//whenever we call initviz, can pass it a dynamic URL
 //6. const options is referenceing the tableau javascript API
 //7. everything else is actual javascript code
-function initViz() {
-  viz = new tableau.Viz(containerDiv, url, options);
+function initViz(vizurl) {
+  viz = new tableau.Viz(containerDiv, vizurl, options);
 }
-document.addEventListener("DOMContentLoaded", initViz);
+document.addEventListener("DOMContentLoaded", initViz(url));
 //8. This reference the entire webpage^
 const exportpdfbutton = document.getElementById("exportPDF");
 exportpdfbutton.addEventListener("click", exportPDFfunction);
@@ -33,6 +36,9 @@ function exportPDFfunction() {
 }
 function exportPowerPointfunction() {
   viz.showExportPowerPointDialog();
+}
+function exportimagefunction() {
+  viz.showExportImageDialog();
 }
 function getRangeValues() {
   const minValue = document.getElementById("minValue").value;
@@ -54,3 +60,24 @@ function getRangeValues() {
 document
   .getElementById("FilterButton")
   .addEventListener("click", getRangeValues);
+
+function switchViz() {
+  console.log("Switching to a different viz");
+  viz.dispose();
+  const anotherVizUrl =
+    "https://public.tableau.com/views/ObesityintheUS_16578036321980/ObesityintheUS?:language=en-US&:display_count=n&:origin=viz_share_link";
+  if (switchstatus == false) {
+    initViz(anotherVizUrl);
+    switchstatus = true;
+  } else if (switchstatus == true) {
+    initViz(url);
+    switchstatus = false;
+  }
+}
+document.getElementById("SwitchViz").addEventListener("click", switchViz);
+
+const exportimagebutton = document.addEventListener(
+  "click",
+  exportimagefunction
+);
+exportimagebutton.addEventListener("click", exportimagefunction);
